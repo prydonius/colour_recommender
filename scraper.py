@@ -9,7 +9,7 @@ from collections import namedtuple
 palette = namedtuple('Palette', ['dominant', 'others'])
 
 #Set the number of colours we want
-COLOUR_PALETTE_SIZE = 8
+COLOUR_PALETTE_SIZE = 5
 
 def getPalette(image):
 	array = scipy.misc.fromimage(image)
@@ -26,12 +26,15 @@ def getPalette(image):
 
 	#Remove the dominant from the colours
 	colours = colours.tolist()
-	dominant = colours[index_max]
-	del colours[index_max]
+	if len(colours) == COLOUR_PALETTE_SIZE:
+		dominant = colours[index_max]
+		del colours[index_max]
 
-	#Return the palette
-	p = palette(dominant, colours)
-	return p
+		#Return the palette
+		p = palette(dominant, colours)
+		return p
+	else:
+		return None
 
 def drawPalette(palette, image):
 	print palette
@@ -56,7 +59,8 @@ def drawPalette(palette, image):
 
 if __name__ == "__main__":
 	#Open the image and display 
-	image = Image.open("test.jpg")
-	#image = Image.open("test2.png")
+	#image = Image.open("test.jpg")
+	image = Image.open("test2.png")
 	palette = getPalette(image)
-	drawPalette(palette, image)
+	if palette is not None:
+		drawPalette(palette, image)
