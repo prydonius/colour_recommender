@@ -41,15 +41,15 @@ def getPalette(image):
 
 	# Remove the dominant from the colours
 	colours = colours.tolist()
-	#if len(colours) == COLOUR_PALETTE_SIZE:
-	dominant = colours[index_max]
-	del colours[index_max]
+	if len(colours) == COLOUR_PALETTE_SIZE:
+		dominant = colours[index_max]
+		del colours[index_max]
 
-	# Return the palette
-	p = palette(dominant, colours)
-	return p
-	#else:
-	#	return None
+		# Return the palette
+		p = palette(dominant, colours)
+		return p
+	else:
+		return None
 
 def drawPalette(palette, image):
 	# Draw out the palette
@@ -85,20 +85,19 @@ def fetchShots():
 	outfile = io.open('dribbble_data', 'w', encoding='utf-8')
 	outfile.write(u"title, views, likes, comments, num_shots, followers, dominant, other\n")
 	for i in range(0, DRIBBBLE_NUMBER_IMAGES):
-  		# 50 is the maximum per page
-  		resp = drib.shots('popular', per_page=50, page=page)
-  		for shot in resp["shots"]:
-   	 		# Get the image and open it
+		# 50 is the maximum per page
+		resp = drib.shots('popular', per_page=50, page=page)
+		for shot in resp["shots"]:
+			# Get the image and open it
 			response = requests.get(shot["image_teaser_url"], stream=True)
 			#response = requests.get(shot["image_teaser_url"])
 			raw_image = cStringIO.StringIO(response.content)
 			img = Image.open(raw_image).convert('RGB')
-			print "wefw"
-    		print "fekhfiw"
-    		palette = None
-    		if palette is not None:
-    			# Convert to HSV
-    			#convertRGB2HSV(palette)
+			palette = getPalette(img)
+			print palette
+			if palette is not None:
+				# Convert to HSV
+				#convertRGB2HSV(palette)
 				# Get other data
 				title = shot["title"]
 				views = str(shot["views_count"])
@@ -109,10 +108,10 @@ def fetchShots():
 				str1 = ''.join(str(e) for e in palette.dominant)
 				str2 = ''.join(" ".join(map(str,l)) for l in palette.others)
 				outfile.write(title + ", " + views + ", " + likes + ", " + comments + ", " + num_shots + ", " + followers + ", "  + str1 + ", " + str2 + "\n")
-  		count += 50
-  		if count >= DRIBBBLE_NUMBER_IMAGES:
+		count += 50
+		if count >= DRIBBBLE_NUMBER_IMAGES:
 			break
-  		page += 1
+		page += 1
 
 if __name__ == "__main__":
 	palette = fetchShots()
