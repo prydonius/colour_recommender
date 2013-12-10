@@ -30,11 +30,7 @@ DRIBBLE_STREAM = "popular"
 def getPalette(image):
 	array = scipy.misc.fromimage(image)
 	shape = array.shape
-	try:
-		array = array.reshape(scipy.product(shape[:2]), shape[2])
-	except:
-		return None
-
+	array = array.reshape(scipy.product(shape[:2]), shape[2])
 	# Use K-Means to get the n most used colours
 	colours, dist = scipy.cluster.vq.kmeans(array, COLOUR_PALETTE_SIZE)
 
@@ -94,9 +90,12 @@ def fetchShots():
   		for shot in resp["shots"]:
    	 		# Get the image and open it
 			response = requests.get(shot["image_teaser_url"], stream=True)
+			#response = requests.get(shot["image_teaser_url"])
 			raw_image = cStringIO.StringIO(response.content)
-			img = Image.open(raw_image)
-    		palette = getPalette(img)
+			img = Image.open(raw_image).convert('RGB')
+			print "wefw"
+    		print "fekhfiw"
+    		palette = None
     		if palette is not None:
     			# Convert to HSV
     			#convertRGB2HSV(palette)
