@@ -105,9 +105,9 @@ def fetchShots():
 				comments = str(shot["comments_count"])
 				num_shots = str(shot["player"]["shots_count"])
 				followers = str(shot["player"]["followers_count"])
-				str1 = ''.join(str(e) for e in palette.dominant)
-				str2 = ''.join(" ".join(map(str,l)) for l in palette.others)
-				outfile.write(title + ", " + views + ", " + likes + ", " + comments + ", " + num_shots + ", " + followers + ", "  + str1 + ", " + str2 + "\n")
+				dominant = ' '.join(str(e) for e in palette.dominant)
+				others = ', '.join(" ".join(map(str,l)) for l in palette.others)
+				outfile.write(title + ", " + views + ", " + likes + ", " + comments + ", " + num_shots + ", " + followers + ", "  + dominant + ", " + others + "\n")
 		count += 50
 		if count >= DRIBBBLE_NUMBER_IMAGES:
 			break
