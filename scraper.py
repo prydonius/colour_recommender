@@ -114,16 +114,19 @@ def fetchShots():
 			print palette
 			user_id = shot["id"]
 
-			# Reset the colours 
+			# Reset the colours
 			colours = dict((k, 0) for k in colours.keys())
 
 			if palette is not None:
 				drawPalette(palette, img)
 				palettes.append(palette)
+				j = 0
 				for colour in palette:
 					classifiedColour = colorclassifier.getColourName(colour)
+					print("colour " + str(j) + ": " + classifiedColour)
 					colours[classifiedColour] += 1
-				print(colours)
+					j += 1
+				# print(colours)
 				outfile.write(u','.join("yes" if colours[colour] > 0 else "no" for colour in colours))
 				outfile.write(u"\n")
 				raw_input("Press Enter to continue...")
