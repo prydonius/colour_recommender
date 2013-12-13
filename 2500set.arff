@@ -1,0 +1,13 @@
+@relation colours
+@attribute reds {yes, no}
+@attribute cyans {yes, no}
+@attribute magentas {yes, no}
+@attribute greens {yes, no}
+@attribute blacks {yes, no}
+@attribute whites {yes, no}
+@attribute grays {yes, no}
+@attribute blues {yes, no}
+@attribute yellows {yes, no}
+@data
+no,yes,no,no,no,yes,no,no,yes
+yes,no,no,yes,no,yes,yes,no,no
