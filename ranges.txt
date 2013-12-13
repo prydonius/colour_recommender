@@ -1,0 +1,4 @@
+Ranges:
+Red: 0-20
+Orange: 20-35
+Yellow: 35-

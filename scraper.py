@@ -139,7 +139,7 @@ def fetchShots():
 					elif colour[1] > 0.8:
 						colours["whites"] += 1
 					# Saturation
-					elif colour[2] < 0.25:
+					elif colour[2] < 0.09:
 						colours["grays"] += 1
 					# Hues
 					elif colour[0] < 30 / float(360):
