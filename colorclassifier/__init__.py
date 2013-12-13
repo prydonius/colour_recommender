@@ -54,6 +54,9 @@ class Classifier():
         'lightblue': (173, 173, 255),
         'lightred': (255, 173, 173),
         'lightgreen': (173, 255, 173),
+        'navy': (0, 0, 128),
+        'saddle_brown': (139, 69, 19),
+        'rosy_brown': (188, 143, 143)
         }
 
     colors_lab = dict()
