@@ -1,12 +1,35 @@
 @relation colours
-@attribute reds {yes, no}
-@attribute cyans {yes, no}
-@attribute magentas {yes, no}
-@attribute greens {yes, no}
-@attribute blacks {yes, no}
-@attribute whites {yes, no}
-@attribute grays {yes, no}
-@attribute blues {yes, no}
-@attribute yellows {yes, no}
+@attribute indigo {yes, no}
+@attribute gold {yes, no}
+@attribute yellow {yes, no}
+@attribute magenta {yes, no}
+@attribute rosybrown {yes, no}
+@attribute blue {yes, no}
+@attribute lightblue {yes, no}
+@attribute darkorange {yes, no}
+@attribute lightpurple {yes, no}
+@attribute seagreen {yes, no}
+@attribute black {yes, no}
+@attribute orange {yes, no}
+@attribute white {yes, no}
+@attribute midnightblue {yes, no}
+@attribute red {yes, no}
+@attribute khaki {yes, no}
+@attribute teal {yes, no}
+@attribute salmon {yes, no}
+@attribute lawngreen {yes, no}
+@attribute lightgreen {yes, no}
+@attribute steelblue {yes, no}
+@attribute maroon {yes, no}
+@attribute cyan {yes, no}
+@attribute lightgray {yes, no}
+@attribute gray {yes, no}
+@attribute darkgreen {yes, no}
+@attribute darkgray {yes, no}
+@attribute purple {yes, no}
+@attribute saddlebrown {yes, no}
+@attribute lightpink {yes, no}
+@attribute green {yes, no}
+@attribute deeppink {yes, no}
 @data
-?,?,?,?,?,yes,?,?,?
+yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no
