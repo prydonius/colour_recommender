@@ -40,24 +40,47 @@ class Classifier():
     TODO - Make colors easily extensible
     '''
     colors = {
-        'red': (255, 0, 0),
-        'green': (0, 255, 0),
-        'blue': (0, 0, 255),
-        'yellow': (255, 255, 0),
-        'cyan': (0, 255, 255),
-        'violet': (255, 0, 255),
-        'orange': (255, 170, 0),
-        'black': (0, 0, 0),
-        'white': (255, 255, 255),
-        'brown': (123, 52, 0),
-        'gray': (127, 127, 127),
-        'lightblue': (173, 173, 255),
-        'lightred': (255, 173, 173),
-        'lightgreen': (173, 255, 173),
-        'navy': (0, 0, 128),
-        'saddle_brown': (139, 69, 19),
-        'rosy_brown': (188, 143, 143)
-        }
+        "black": (0, 0, 0),
+        "white": (255, 255, 255),
+        "lightgray": (211, 211, 211),
+        "gray": (169, 169, 169),
+        "darkgray": (105, 105, 105),
+        # Red
+        "salmon": (250, 128, 114),
+        "red": (255, 0, 0),
+        "maroon": (128, 0, 0),
+        # Orange
+        "orange": (255, 165, 0),
+        "darkorange": (255, 140, 0),
+        "rosybrown": (188, 143, 143),
+        "saddlebrown": (139, 69, 19),
+        # Yellow
+        "khaki": (240, 230, 140),
+        "yellow": (255, 255, 0),
+        "gold": (255, 215, 0),
+        # Green
+        "lawngreen": (124, 252, 0),
+        "lightgreen": (50, 205, 50),
+        "green": (34, 139, 34),
+        "darkgreen": (0, 100, 0),
+        "seagreen": (46, 139, 87),
+        "teal": (0, 128, 128),
+        # Cyan
+        "cyan": (0, 255, 255),
+        # Blues
+        "steelblue": (70, 130, 180),
+        "lightblue": (135, 206, 250),
+        "midnightblue": (25, 25, 112),
+        "blue": (0, 0, 255),
+        # Purples
+        "indigo": (75, 0, 130),
+        "lightpurple": (147, 112, 219),
+        "purple": (128, 0, 128),
+        # Pinks
+        "magenta": (255, 0, 255),
+        "deeppink": (255, 20, 147),
+        "lightpink": (255, 192, 203)
+    }
 
     colors_lab = dict()
 

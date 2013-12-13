@@ -123,7 +123,7 @@ def fetchShots():
 				j = 0
 				for colour in palette:
 					classifiedColour = colorclassifier.getColourName(colour)
-					print("colour " + str(j) + ": " + classifiedColour)
+					print("colour " + str(j) + ": " + classifiedColour + " ")
 					colours[classifiedColour] += 1
 					j += 1
 				# print(colours)
