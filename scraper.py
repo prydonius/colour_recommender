@@ -12,6 +12,9 @@ import scipy.cluster
 # Dribbble API
 import dribbble as drib
 
+# Colour classiier
+from colorclassifier import Classifier
+
 # Other Libraries
 from collections import namedtuple
 import cStringIO
@@ -90,19 +93,13 @@ def fetchShots():
 	outfile = io.open(FILENAME, 'w', encoding='utf-8')
 	palettes = []
 	outfile.write(u"@relation colours\n")
-	colours = {
-		"blacks": 0,
-		"whites": 0,
-		"grays": 0,
-		"reds": 0,
-		"yellows": 0,
-		"greens": 0,
-		"cyans": 0,
-		"blues": 0,
-		"magentas": 0
-	}
+
+
+	colorclassifier = Classifier()
+	colours = dict.fromkeys(colorclassifier.getColours().keys(), 0)
+
 	for colour in colours:
-		outfile.write(u"@attribute " + colour + u" {yes, no}\n")
+	outfile.write(u"@attribute " + colour + u" {yes, no}\n")
 	outfile.write(u"@data\n")
 	for i in range(0, DRIBBBLE_NUMBER_IMAGES):
 		# 50 is the maximum per page
@@ -128,7 +125,7 @@ def fetchShots():
 				"magentas": 0
 			}
 			if palette is not None:
-				drawPalette(palette, img)
+				#drawPalette(palette, img)
 				palette = convertRGB2HSV(palette)
 				# print palette
 				palettes.append(palette)
