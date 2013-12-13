@@ -92,6 +92,10 @@ class Classifier():
             key=ColorDistance(self._lab_to_tuple(self.lab)))
         return name
 
+    def getColourName(self, color):
+        self.set_rgb(color)
+        return self.get_name()
+
     def _lab_to_tuple(self, lab):
         return (lab.lab_l, lab.lab_a, lab.lab_b)
 
@@ -100,7 +104,7 @@ class Classifier():
         return rgb.convert_to('lab')
 
     def getColours(self):
-        return colors;
+        return self.colors;
 
 
 class ColorDistance(object):

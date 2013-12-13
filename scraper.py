@@ -99,8 +99,8 @@ def fetchShots():
 	colours = dict.fromkeys(colorclassifier.getColours().keys(), 0)
 
 	for colour in colours:
-	outfile.write(u"@attribute " + colour + u" {yes, no}\n")
-	outfile.write(u"@data\n")
+		outfile.write(u"@attribute " + colour + u" {yes, no}\n")
+		outfile.write(u"@data\n")
 	for i in range(0, DRIBBBLE_NUMBER_IMAGES):
 		# 50 is the maximum per page
 		resp = drib.shots('popular', per_page=50, page=page)
@@ -113,47 +113,16 @@ def fetchShots():
 			palette = getPalette(img)
 			print palette
 			user_id = shot["id"]
-			colours = {
-				"blacks": 0,
-				"whites": 0,
-				"grays": 0,
-				"reds": 0,
-				"yellows": 0,
-				"greens": 0,
-				"cyans": 0,
-				"blues": 0,
-				"magentas": 0
-			}
+
+			# Reset the colours 
+			colours = dict((k, 0) for k in colours.keys())
+
 			if palette is not None:
-				#drawPalette(palette, img)
-				palette = convertRGB2HSV(palette)
-				# print palette
+				drawPalette(palette, img)
 				palettes.append(palette)
 				for colour in palette:
-					# Lightness
-					if colour[1] < 0.2:
-						colours["blacks"] += 1
-					elif colour[1] > 0.8:
-						colours["whites"] += 1
-					# Saturation
-					elif colour[2] < 0.09:
-						colours["grays"] += 1
-					# Hues
-					elif colour[0] < 30 / float(360):
-						colours["reds"] += 1
-					elif colour[0] < 90 / float(360):
-						colours["yellows"] += 1
-					elif colour[0] < 150 / float(360):
-						colours["greens"] += 1
-					elif colour[0] < 210 / float(360):
-						colours["cyans"] += 1
-						print colour[0]
-					elif colour[0] < 270 / float(360):
-						colours["blues"] += 1
-					elif colour[0] < 330 / float(360):
-						colours["magentas"] += 1
-					else:
-						colours["reds"] += 1
+					classifiedColour = colorclassifier.getColourName(colour)
+					colours[classifiedColour] += 1
 				print(colours)
 				outfile.write(u','.join("yes" if colours[colour] > 0 else "no" for colour in colours))
 				outfile.write(u"\n")
