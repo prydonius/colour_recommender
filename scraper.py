@@ -21,15 +21,17 @@ import cStringIO
 import io
 import requests
 import shutil
+import pickle
+import copy
 
 palette = namedtuple('Palette', ['dominant', 'others'])
 
 # Set the number of colours we want
 COLOUR_PALETTE_SIZE = 5
 # Dribbble settings
-DRIBBBLE_NUMBER_IMAGES = 2500
+DRIBBBLE_NUMBER_IMAGES = 10
 DRIBBLE_STREAM = "popular"
-FILENAME = "2500set.arff"
+FILENAME = "10set.arff"
 
 def getPalette(image):
 	array = scipy.misc.fromimage(image)
@@ -92,9 +94,9 @@ def fetchShots():
 	page = 0
 	outfile = io.open(FILENAME, 'w', encoding='utf-8')
 	palettes = []
+	# Array of each image data to be pickled
+	training_data = []
 	outfile.write(u"@relation colours\n")
-
-
 	colorclassifier = Classifier()
 	colours = dict.fromkeys(colorclassifier.getColours().keys(), 0)
 
@@ -103,7 +105,7 @@ def fetchShots():
 	outfile.write(u"@data\n")
 	for i in range(0, DRIBBBLE_NUMBER_IMAGES):
 		# 50 is the maximum per page
-		resp = drib.shots('popular', per_page=50, page=page)
+		resp = drib.shots('popular', per_page=10, page=page)
 		for shot in resp["shots"]:
 			# Get the image and open it
 			response = requests.get(shot["image_teaser_url"], stream=True)
@@ -115,7 +117,8 @@ def fetchShots():
 			user_id = shot["id"]
 
 			# Reset the colours
-			colours = dict((k, 0) for k in colours.keys())
+			for colour in colours:
+				colours[colour] = 0
 
 			if palette is not None:
 				# drawPalette(palette, img)
@@ -127,13 +130,17 @@ def fetchShots():
 					colours[classifiedColour] += 1
 					j += 1
 				# print(colours)
+				training_data.append(copy.copy(colours))
 				outfile.write(u','.join("yes" if colours[colour] > 0 else "no" for colour in colours))
 				outfile.write(u"\n")
 				# raw_input("Press Enter to continue...")
-		count += 50
+		count += 10
 		if count >= DRIBBBLE_NUMBER_IMAGES:
 			break
 		page += 1
+	td_file = io.open("training_data.pkl", 'wb')
+	pickle.dump(training_data, td_file)
+	td_file.close()
 
 if __name__ == "__main__":
 	palette = fetchShots()

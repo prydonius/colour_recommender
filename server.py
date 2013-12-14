@@ -7,9 +7,13 @@ from weka.classifiers import Classifier
 from colorclassifier import Classifier as ColorClassifier
 import io
 import operator
+import pickle
+from subprocess import call
+import os
+import ast
 app = Flask(__name__)
 
-models = {}
+images = {}
 PICKLED=True
 
 # To preserve order
@@ -53,38 +57,70 @@ def index():
   colours = ColorClassifier().getColours()
   return render_template('index.html', colours=colours)
 
-@app.route("/test")
-def test():
-  print request.args.getlist("yourcolours")
-  return "hello"
-
-
-@app.route("/predict")
-def predict():
+@app.route("/multipredict")
+def multipredict():
   global colours
-  yourcolours = dict.fromkeys(colours, 0)
-  # /predict?colour=blue&colour=red etc.
-  requestedcolours = request.args.getlist("colour[]")
-  for colour in requestedcolours:
-    yourcolours[colour] = 1
-  outfile = io.open("query.arff", 'w', encoding='utf-8')
-  outfile.write(u"@relation colours\n")
+  # The users current palette
+  palette = dict.fromkeys(colours, 0)
+  # palette["white"] = 1
+  # palette["black"] = 1
+  # palette["salmon"] = 1
+  # /predict?colour[]=blue&colour[]=red etc.
+  palette_list = request.args.getlist("colour[]")
+  for colour in palette_list:
+    palette[colour] = 1
+  predict_list = []
+  num_labels = len(colours) - len(palette_list)
+  # Creating training file
+  outfile = io.open("training_data.arff", 'w')
+  outfile.write(u"@relation 'colours: -C " + str(num_labels) + u"'\n")
+  global images
   for colour in colours:
-    outfile.write(u"@attribute " + colour + u" {yes, no}\n")
+    # Colour is in the palette, we don't want it to be a target attribute
+    if colour in palette_list:
+      continue
+    predict_list.append(colour)
+  for colour in predict_list:
+    outfile.write(u"@attribute " + colour + u" {0,1}\n")
+  for colour in palette_list:
+    outfile.write(u"@attribute " + colour + u" {0,1}\n")
   outfile.write(u"@data\n")
-  outfile.write(u','.join("yes" if yourcolours[colour] > 0 else "no" for colour in colours))
+  for image in images:
+    outfile.write(u','.join("1" if image[c] > 0 else "0" for c in predict_list))
+    outfile.write(u",")
+    outfile.write(u','.join("1" if image[c] > 0 else "0" for c in palette_list))
+    outfile.write(u"\n")
   outfile.close()
-  global models
+  # Create query file
+  outfile = io.open("query.arff", 'w')
+  outfile.write(u"@relation 'colours: -C " + str(num_labels) + u"'\n")
+  for colour in predict_list:
+    outfile.write(u"@attribute " + colour + u" {0,1}\n")
+  for colour in palette_list:
+    outfile.write(u"@attribute " + colour + u" {0,1}\n")
+  outfile.write(u"@data\n")
+  outfile.write(u','.join("0" for c in predict_list))
+  outfile.write(u",")
+  outfile.write(u','.join("1" for c in palette_list))
+  outfile.write(u"\n")
+  outfile.close()
+  call([
+    "java",
+    "-cp", os.environ['MEKA_PATH'],
+    "weka.classifiers.multilabel.BR",
+    "-t", "training_data.arff",
+    "-T", "query.arff",
+    "-W", "weka.classifiers.lazy.IBk",
+    "-f", "MEKA_OUT"
+  ])
+  outfile = os.popen("tail -1 " + "MEKA_OUT").readlines()[0]
+  probs = ast.literal_eval(outfile.split(":")[1].split("\n")[0])
+  map(float, probs)
   j = 0
   predictions = {}
-  for colour in colours:
+  for prob in probs:
+    predictions[predict_list[j]] = prob
     j += 1
-    # Colour is already in the palette, skip prediction
-    if yourcolours[colour] == 1:
-      continue
-    # run a prediction for this colour
-    prediction = list(models[colour].predict('query.arff', False, False, None, j))[0]
-    predictions[colour] = (prediction[2] if prediction[1] == "yes" else 1 - prediction[2])
   predictions_s = sorted(predictions.iteritems(), key=operator.itemgetter(1), reverse=True)
   print predictions_s
   values = ColorClassifier().getColours()
@@ -98,16 +134,8 @@ def predict():
   return jsonify(predictions=top5)
 
 if __name__ == "__main__":
-  print("Training models, this may take a while")
-  j = 0
-  for colour in colours:
-    j += 1
-    if PICKLED:
-      models[colour] = Classifier.load('models/' + colour + '.pkl')
-    else:
-      models[colour] = Classifier(name='weka.classifiers.lazy.IBk', ckargs={'-K':1,'-c':j})
-      models[colour].train('25001set.arff')
-      models[colour].save('models/' + colour + '.pkl')
-  print("Trained - Ready")
+  pkl_file = open('training_data.pkl', 'rb')
+  images = pickle.load(pkl_file)
+  pkl_file.close()
+  print("Pickled training data loaded")
   app.run()
-  print("Server started")

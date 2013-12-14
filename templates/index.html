@@ -10,7 +10,7 @@
 
         function get_predictions() {
           $('.predictions').html("Predicting...")
-          $.getJSON("/predict", { "colour": yours }, function(data) {
+          $.getJSON("/multipredict", { "colour": yours }, function(data) {
             $.each(data.predictions, function(i, pred) {
               elem = $("<div></div>")
               elem.css({
