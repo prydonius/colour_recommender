@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Hello from Flask</title>
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script>
+      $(function() {
+
+        var yours = [];
+
+        function get_predictions() {
+          $('.predictions').html("Predicting...")
+          $.getJSON("/predict", { "colour": yours }, function(data) {
+            $.each(data.predictions, function(i, pred) {
+              elem = $("<div></div>")
+              elem.css({
+                "width": "20px",
+                "height": "20px",
+                "background-color": "rgb"+pred.colour,
+                "float": "left",
+                "border": "1px solid #000"
+              });
+              elem.attr({ title: pred.name + " (" + pred.probability + ")" });
+              if (i == 0) {
+                $('.predictions').html("")
+              }
+              $(".predictions").append(elem);
+            });
+          });
+        }
+
+        $(".colour").click(function(e) {
+          e.preventDefault();
+          if (yours.length == 0) {
+            $(".yours").html("");
+          }
+          yours.push(e.target.title);
+          get_predictions();
+          elem = $("<div></div>")
+          elem.css({
+            "width": "20px",
+            "height": "20px",
+            "background-color": $(e.target).css('background-color'),
+            "float": "left",
+            "border": "1px solid #000"
+          });
+          $(".yours").append(elem);
+        });
+
+        $(".clear").click(function(e) {
+          e.preventDefault();
+          yours = []
+          $(".yours").html("Click on a colour above to add a colour to your palette");
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h2>All colours:</h2><hr />
+    <div style="width:180px">
+      {% for colour in colours %}
+      <a class="colour" href="#" style="width:20px;height:20px;background-color: rgb{{ colours[colour] }};float:left;border:1px solid #000;" title="{{ colour }}"></a>
+      {% endfor %}
+      <div style="clear:both;"></div>
+    </div>
+    <h2>Predicted colours:</h2><hr />
+    <div style="width:180px">
+      <div class="predictions">
+        Add at least one colour from above to start predicting
+      </div>
+      <div style="clear:both;"></div>
+    </div>
+    <h2>Your colours:</h2><hr />
+    <div style="width:180px;margin-bottom:20px;">
+      <div class="yours">
+        Click on a colour above to add a colour to your palette
+      </div>
+      <div style="clear:both;"></div>
+    </div>
+    <button class="clear">Clear</button>
+  </body>
+</html>
