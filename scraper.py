@@ -29,7 +29,7 @@ COLOUR_PALETTE_SIZE = 5
 # Dribbble settings
 DRIBBBLE_NUMBER_IMAGES = 2500
 DRIBBLE_STREAM = "popular"
-FILENAME = "2500set.arff"
+FILENAME = "2500set_newColours.arff"
 
 def getPalette(image):
 	array = scipy.misc.fromimage(image)
@@ -65,12 +65,12 @@ def drawPalette(palette, image):
 		i += 1
 
 	# Draw out the dominant colour
-	# dominant = Image.new(image.mode, (20, 20), "white")
-	# drawD = ImageDraw.Draw(dominant)
-	# drawD.rectangle([(0, 0), (20, 20)], fill = tuple(palette[0]))
+	dominant = Image.new(image.mode, (20, 20), "white")
+	drawD = ImageDraw.Draw(dominant)
+	drawD.rectangle([(0, 0), (20, 20)], fill = tuple(palette[0]))
 
 	# Show the palettes and original image
-	# dominant.show()
+	dominant.show()
 	paletteImage.show()
 	image.show()
 
@@ -99,7 +99,9 @@ def fetchShots():
 	colours = dict.fromkeys(colorclassifier.getColours().keys(), 0)
 
 	for colour in colours:
-		outfile.write(u"@attribute " + colour + u" {yes, no}\n")
+		colour = colour.replace(' ','')
+		colour = colour.replace("'",'')
+		outfile.write(u"@attribute " + colour + " {yes, no}\n")
 	outfile.write(u"@data\n")
 	for i in range(0, DRIBBBLE_NUMBER_IMAGES):
 		# 50 is the maximum per page
@@ -118,7 +120,7 @@ def fetchShots():
 			colours = dict((k, 0) for k in colours.keys())
 
 			if palette is not None:
-				# drawPalette(palette, img)
+				drawPalette(palette, img)
 				palettes.append(palette)
 				j = 0
 				for colour in palette:
@@ -129,7 +131,7 @@ def fetchShots():
 				# print(colours)
 				outfile.write(u','.join("yes" if colours[colour] > 0 else "no" for colour in colours))
 				outfile.write(u"\n")
-				# raw_input("Press Enter to continue...")
+				raw_input("Press Enter to continue...")
 		count += 50
 		if count >= DRIBBBLE_NUMBER_IMAGES:
 			break
