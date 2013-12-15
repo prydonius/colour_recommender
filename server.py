@@ -17,40 +17,7 @@ images = {}
 PICKLED=True
 
 # To preserve order
-colours = [
-  "indigo",
-  "gold",
-  "yellow",
-  "magenta",
-  "rosybrown",
-  "blue",
-  "lightblue",
-  "darkorange",
-  "lightpurple",
-  "seagreen",
-  "black",
-  "orange",
-  "white",
-  "midnightblue",
-  "red",
-  "khaki",
-  "teal",
-  "salmon",
-  "lawngreen",
-  "lightgreen",
-  "steelblue",
-  "maroon",
-  "cyan",
-  "lightgray",
-  "gray",
-  "darkgreen",
-  "darkgray",
-  "purple",
-  "saddlebrown",
-  "lightpink",
-  "green",
-  "deeppink"
-]
+colours = dict.fromkeys(ColorClassifier().getColours().keys(), 0)
 
 @app.route("/")
 def index():
@@ -81,8 +48,18 @@ def multipredict():
       continue
     predict_list.append(colour)
   for colour in predict_list:
+    colour = colour.replace(' ','')
+    colour = colour.replace("'",'')
+    colour = colour.replace("(",'')
+    colour = colour.replace(")",'')
+    colour = colour.replace("/",'')
     outfile.write(u"@attribute " + colour + u" {0,1}\n")
   for colour in palette_list:
+    colour = colour.replace(' ','')
+    colour = colour.replace("'",'')
+    colour = colour.replace("(",'')
+    colour = colour.replace(")",'')
+    colour = colour.replace("/",'')
     outfile.write(u"@attribute " + colour + u" {0,1}\n")
   outfile.write(u"@data\n")
   for image in images:
@@ -95,8 +72,18 @@ def multipredict():
   outfile = io.open("query.arff", 'w')
   outfile.write(u"@relation 'colours: -C " + str(num_labels) + u"'\n")
   for colour in predict_list:
+    colour = colour.replace(' ','')
+    colour = colour.replace("'",'')
+    colour = colour.replace("(",'')
+    colour = colour.replace(")",'')
+    colour = colour.replace("/",'')
     outfile.write(u"@attribute " + colour + u" {0,1}\n")
   for colour in palette_list:
+    colour = colour.replace(' ','')
+    colour = colour.replace("'",'')
+    colour = colour.replace("(",'')
+    colour = colour.replace(")",'')
+    colour = colour.replace("/",'')
     outfile.write(u"@attribute " + colour + u" {0,1}\n")
   outfile.write(u"@data\n")
   outfile.write(u','.join("0" for c in predict_list))

@@ -29,9 +29,9 @@ palette = namedtuple('Palette', ['dominant', 'others'])
 # Set the number of colours we want
 COLOUR_PALETTE_SIZE = 5
 # Dribbble settings
-DRIBBBLE_NUMBER_IMAGES = 10
+DRIBBBLE_NUMBER_IMAGES = 2500
 DRIBBLE_STREAM = "popular"
-FILENAME = "10set.arff"
+FILENAME = "2500set_newColours.arff"
 
 def getPalette(image):
 	array = scipy.misc.fromimage(image)
@@ -101,11 +101,13 @@ def fetchShots():
 	colours = dict.fromkeys(colorclassifier.getColours().keys(), 0)
 
 	for colour in colours:
-		outfile.write(u"@attribute " + colour + u" {yes, no}\n")
+		colour = colour.replace(' ','')
+		colour = colour.replace("'",'')
+		outfile.write(u"@attribute " + colour + " {yes, no}\n")
 	outfile.write(u"@data\n")
 	for i in range(0, DRIBBBLE_NUMBER_IMAGES):
 		# 50 is the maximum per page
-		resp = drib.shots('popular', per_page=10, page=page)
+		resp = drib.shots('popular', per_page=50, page=page)
 		for shot in resp["shots"]:
 			# Get the image and open it
 			response = requests.get(shot["image_teaser_url"], stream=True)
@@ -134,7 +136,7 @@ def fetchShots():
 				outfile.write(u','.join("yes" if colours[colour] > 0 else "no" for colour in colours))
 				outfile.write(u"\n")
 				# raw_input("Press Enter to continue...")
-		count += 10
+		count += 50
 		if count >= DRIBBBLE_NUMBER_IMAGES:
 			break
 		page += 1
