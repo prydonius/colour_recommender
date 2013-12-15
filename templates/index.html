@@ -8,6 +8,14 @@
 
         var yours = [];
 
+        function rgbToHex(R,G,B) { return toHex(R)+toHex(G)+toHex(B); }
+        function toHex(n) {
+         n = parseInt(n,10);
+         if (isNaN(n)) return "00";
+         n = Math.max(0,Math.min(n,255));
+         return "0123456789ABCDEF".charAt((n-n%16)/16)
+              + "0123456789ABCDEF".charAt(n%16);
+        }
         function get_predictions() {
           $('.predictions').html("Predicting...")
           $.getJSON("/multipredict", { "colour": yours }, function(data) {
@@ -20,9 +28,12 @@
                 "float": "left",
                 "border": "1px solid #000"
               });
-              elem.attr({ title: pred.name + " (" + pred.probability + ")" });
+              rgbarr = pred.colour.replace("(", "");
+              rgbarr = rgbarr.replace(")", "");
+              rgbarr = rgbarr.split(", ");
+              elem.attr({ title: pred.name + " (" + pred.probability + ") " + rgbToHex(rgbarr[0], rgbarr[1], rgbarr[2]) });
               if (i == 0) {
-                $('.predictions').html("")
+                $('.predictions').html("");
               }
               $(".predictions").append(elem);
             });
@@ -44,6 +55,12 @@
             "float": "left",
             "border": "1px solid #000"
           });
+          rgbarr = $(e.target).css('background-color').replace("(", "");
+          rgbarr = rgbarr.replace(")", "");
+          rgbarr = rgbarr.replace("rgb", "");
+          rgbarr = rgbarr.split(", ");
+          console.log(rgbarr);
+          elem.attr({ title: e.target.title + " " + rgbToHex(rgbarr[0], rgbarr[1], rgbarr[2]) });
           $(".yours").append(elem);
         });
 
@@ -56,6 +73,7 @@
     </script>
   </head>
   <body>
+    <h1>{{ blah }}</h1>
     <h2>All colours:</h2><hr />
     <div style="width:180px">
       {% for colour in colours %}

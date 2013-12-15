@@ -11,6 +11,7 @@ import pickle
 from subprocess import call
 import os
 import ast
+import sys
 app = Flask(__name__)
 
 images = {}
@@ -54,8 +55,9 @@ colours = [
 
 @app.route("/")
 def index():
+  blah = "Bayes" if sys.argv[1] == "5001" else "Knn"
   colours = ColorClassifier().getColours()
-  return render_template('index.html', colours=colours)
+  return render_template('index.html', colours=colours, blah=blah)
 
 @app.route("/multipredict")
 def multipredict():
@@ -110,7 +112,8 @@ def multipredict():
     "weka.classifiers.multilabel.BR",
     "-t", "training_data.arff",
     "-T", "query.arff",
-    "-W", "weka.classifiers.lazy.IBk",
+    # "-W", "weka.classifiers.lazy.IBk",
+    "-W", "weka.classifiers.bayes.NaiveBayes",
     "-f", "MEKA_OUT"
   ])
   outfile = os.popen("tail -1 " + "MEKA_OUT").readlines()[0]
@@ -138,4 +141,4 @@ if __name__ == "__main__":
   images = pickle.load(pkl_file)
   pkl_file.close()
   print("Pickled training data loaded")
-  app.run()
+  app.run(port=sys.argv[1])
