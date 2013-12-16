@@ -24,8 +24,6 @@ import shutil
 import pickle
 import copy
 
-palette = namedtuple('Palette', ['dominant', 'others'])
-
 # Set the number of colours we want
 COLOUR_PALETTE_SIZE = 5
 # Dribbble settings
@@ -40,19 +38,8 @@ def getPalette(image):
 	# Use K-Means to get the n most used colours
 	colours, dist = scipy.cluster.vq.kmeans(array, COLOUR_PALETTE_SIZE)
 
-	# Get the most dominant colour from this
-	vecs, dist = scipy.cluster.vq.vq(array, colours)
-	counts, bins = scipy.histogram(vecs, len(colours))
-	index_max = scipy.argmax(counts)
-
-	# Remove the dominant from the colours
 	colours = colours.tolist()
 	if len(colours) == COLOUR_PALETTE_SIZE:
-		# dominant = colours[index_max]
-		# del colours[index_max]
-
-		# Return the palette
-		# p = palette(dominant, colours)
 		return colours
 	else:
 		return None
