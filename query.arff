@@ -32,4 +32,4 @@
 @attribute green {yes, no}
 @attribute deeppink {yes, no}
 @data
-yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no
+no,no,no,no,no,no,no,no,no,no,no,no,yes,no,no,no,no,no,no,yes,no,no,no,yes,no,no,no,no,no,no,no,no

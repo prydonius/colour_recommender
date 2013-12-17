@@ -115,7 +115,9 @@ def fetchShots():
 			user_id = shot["id"]
 
 			# Reset the colours
-			colours = dict((k, 0) for k in colours.keys())
+			# colours = dict((k, 0) for k in colours.keys())
+			for colour in colours:
+				colours[colour] = 0
 
 			if palette is not None:
 				# drawPalette(palette, img)

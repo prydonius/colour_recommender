@@ -7,10 +7,11 @@ from weka.classifiers import Classifier
 from colorclassifier import Classifier as ColorClassifier
 import io
 import operator
+import sys
 app = Flask(__name__)
 
 models = {}
-PICKLED=True
+PICKLED=False
 
 # To preserve order
 colours = [
@@ -51,7 +52,8 @@ colours = [
 @app.route("/")
 def index():
   colours = ColorClassifier().getColours()
-  return render_template('index.html', colours=colours)
+  classifier = "Knn" if sys.argv[1] == "5000" else "Bayes"
+  return render_template('index.html', colours=colours, classifier=classifier)
 
 @app.route("/test")
 def test():
@@ -106,8 +108,8 @@ if __name__ == "__main__":
       models[colour] = Classifier.load('models/' + colour + '.pkl')
     else:
       models[colour] = Classifier(name='weka.classifiers.lazy.IBk', ckargs={'-K':1,'-c':j})
-      models[colour].train('25001set.arff')
+      models[colour].train('2500set.arff')
       models[colour].save('models/' + colour + '.pkl')
   print("Trained - Ready")
-  app.run()
+  app.run(port=sys.argv[1])
   print("Server started")
